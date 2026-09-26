@@ -24,6 +24,8 @@ connectDB();
 
 const app = express();
 
+// Required for Render reverse proxy
+app.set('trust proxy', 2);
 
 // =====================================================
 // SECURITY
@@ -43,7 +45,6 @@ app.use(
   })
 );
 
-
 // =====================================================
 // RATE LIMITING
 // =====================================================
@@ -55,7 +56,6 @@ const limiter = rateLimit({
 
 app.use('/api', limiter);
 
-
 // =====================================================
 // API ROUTES
 // =====================================================
@@ -65,7 +65,6 @@ app.use('/api/teams', teamRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/tasks', taskRoutes);
 app.use('/api/comments', commentRoutes);
-
 
 // =====================================================
 // HEALTH CHECK
@@ -78,7 +77,6 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-
 // =====================================================
 // HTTP SERVER
 // =====================================================
@@ -86,7 +84,6 @@ app.get('/api/health', (req, res) => {
 const PORT = process.env.PORT || 5000;
 
 const httpServer = http.createServer(app);
-
 
 // =====================================================
 // SOCKET.IO
@@ -99,10 +96,7 @@ const io = new Server(httpServer, {
   },
 });
 
-// Make the Socket.IO instance available
-// to controllers through socket.js
 setIO(io);
-
 
 // =====================================================
 // SOCKET CONNECTION
@@ -110,11 +104,6 @@ setIO(io);
 
 io.on('connection', (socket) => {
   console.log(`Socket connected: ${socket.id}`);
-
-
-  // ---------------------------------------------------
-  // JOIN PROJECT ROOM
-  // ---------------------------------------------------
 
   socket.on('join_project', (projectId) => {
     if (!projectId) {
@@ -125,15 +114,8 @@ io.on('connection', (socket) => {
 
     socket.join(roomName);
 
-    console.log(
-      `${socket.id} joined ${roomName}`
-    );
+    console.log(`${socket.id} joined ${roomName}`);
   });
-
-
-  // ---------------------------------------------------
-  // LEAVE PROJECT ROOM
-  // ---------------------------------------------------
 
   socket.on('leave_project', (projectId) => {
     if (!projectId) {
@@ -144,15 +126,8 @@ io.on('connection', (socket) => {
 
     socket.leave(roomName);
 
-    console.log(
-      `${socket.id} left ${roomName}`
-    );
+    console.log(`${socket.id} left ${roomName}`);
   });
-
-
-  // ---------------------------------------------------
-  // JOIN TASK ROOM
-  // ---------------------------------------------------
 
   socket.on('join_task', (taskId) => {
     if (!taskId) {
@@ -163,15 +138,8 @@ io.on('connection', (socket) => {
 
     socket.join(roomName);
 
-    console.log(
-      `${socket.id} joined ${roomName}`
-    );
+    console.log(`${socket.id} joined ${roomName}`);
   });
-
-
-  // ---------------------------------------------------
-  // LEAVE TASK ROOM
-  // ---------------------------------------------------
 
   socket.on('leave_task', (taskId) => {
     if (!taskId) {
@@ -182,38 +150,22 @@ io.on('connection', (socket) => {
 
     socket.leave(roomName);
 
-    console.log(
-      `${socket.id} left ${roomName}`
-    );
+    console.log(`${socket.id} left ${roomName}`);
   });
-
-
-  // ---------------------------------------------------
-  // DISCONNECT
-  // ---------------------------------------------------
 
   socket.on('disconnect', () => {
-    console.log(
-      `Socket disconnected: ${socket.id}`
-    );
+    console.log(`Socket disconnected: ${socket.id}`);
   });
 });
-
 
 // =====================================================
 // START SERVER
 // =====================================================
 
 httpServer.listen(PORT, () => {
-  console.log(
-    `Server running on http://localhost:${PORT}`
-  );
-
-  console.log(
-    `Socket.IO running on http://localhost:${PORT}`
-  );
+  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Socket.IO running on http://localhost:${PORT}`);
 });
-
 
 // =====================================================
 // EXPORT
