@@ -40,6 +40,11 @@ export const AuthProvider = ({ children }) => {
     setUser(data.user);
   };
 
+  // Update user information after Account Settings changes
+  const updateUser = (updatedUser) => {
+    setUser(updatedUser);
+  };
+
   const logout = () => {
     localStorage.removeItem('token');
     setUser(null);
@@ -51,6 +56,7 @@ export const AuthProvider = ({ children }) => {
         user,
         loading,
         login,
+        updateUser,
         logout,
       }}
     >

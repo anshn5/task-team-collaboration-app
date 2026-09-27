@@ -3,15 +3,26 @@ const express = require('express');
 const {
   signup,
   login,
+  updateProfile,
 } = require('../controllers/authController');
 
 const protect = require('../middleware/authMiddleware');
+
 const requireRole = require('../middleware/roleMiddleware');
 
 const router = express.Router();
 
+// =====================================================
+// AUTHENTICATION
+// =====================================================
+
 router.post('/signup', signup);
+
 router.post('/login', login);
+
+// =====================================================
+// CURRENT USER
+// =====================================================
 
 router.get('/me', protect, (req, res) => {
   res.json({
@@ -21,7 +32,16 @@ router.get('/me', protect, (req, res) => {
   });
 });
 
-// Admin-only test route
+// =====================================================
+// UPDATE PROFILE
+// =====================================================
+
+router.put('/profile', protect, updateProfile);
+
+// =====================================================
+// ADMIN-ONLY TEST ROUTE
+// =====================================================
+
 router.get(
   '/admin-test',
   protect,
