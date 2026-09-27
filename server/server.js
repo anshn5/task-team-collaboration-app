@@ -28,16 +28,38 @@ const app = express();
 app.set('trust proxy', 2);
 
 // =====================================================
+// CORS
+// =====================================================
+
+const allowedOrigins = [
+  'https://task-team-collaboration-app.vercel.app',
+  'https://task-team-collaboration-hzhirh4gi-ansh-projects4.vercel.app',
+  process.env.CLIENT_URL,
+].filter(Boolean);
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // Allow requests without an Origin header
+      // such as PowerShell, Postman, or server-to-server requests.
+      if (!origin) {
+        return callback(null, true);
+      }
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error('Not allowed by CORS'));
+    },
+  })
+);
+
+// =====================================================
 // SECURITY
 // =====================================================
 
 app.use(helmet());
-
-app.use(
-  cors({
-    origin: process.env.CLIENT_URL,
-  })
-);
 
 app.use(
   express.json({
@@ -91,7 +113,7 @@ const httpServer = http.createServer(app);
 
 const io = new Server(httpServer, {
   cors: {
-    origin: process.env.CLIENT_URL,
+    origin: allowedOrigins,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
   },
 });
