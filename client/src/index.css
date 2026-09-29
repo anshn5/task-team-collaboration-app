@@ -1,1 +1,42 @@
 @import "tailwindcss";
+
+/* =====================================================
+   GLOBAL TASKCOLLAB BACKGROUND
+   ===================================================== */
+
+html,
+body,
+#root {
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  background: #0b1020 !important;
+  background-image: url('/taskcollab-background.png') !important;
+  background-position: center !important;
+  background-size: cover !important;
+  background-repeat: no-repeat !important;
+  background-attachment: fixed !important;
+}
+
+/* Make application root transparent */
+#root {
+  background: transparent !important;
+}
+
+/* Remove the solid dark page backgrounds globally */
+#root .bg-slate-950 {
+  background: transparent !important;
+}
+
+/* Also remove dark semi-transparent page overlays */
+#root .bg-slate-950\/95,
+#root .bg-slate-950\/90,
+#root .bg-slate-950\/80,
+#root .bg-slate-950\/70,
+#root .bg-slate-950\/60,
+#root .bg-slate-950\/50,
+#root .bg-slate-950\/40 {
+  background-color: transparent !important;
+}
